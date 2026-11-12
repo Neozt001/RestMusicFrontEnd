@@ -13,23 +13,35 @@
         <div id="app">
             <h1> Music Records </h1>
 
-            <button id = "button1" v-on:click="getAllPosts">Get All posts</button>
+            <button id = "button1" v-on:click="getAllPosts">Get All Records</button>
             <button id = "button2" v-on:click="showPosts = !showPosts">
                 {{ showPosts ? 'Hide posts' : 'Show posts' }}
             </button>
 
             <div>
-                <input v-model="id" type="text" placeholder= "Type ID" />
-                <input v-model="title" id = "text" placeholder= "Type Title" />
-                <input v-model="artist" type= "text" placeholder= "Type Artist" />
-                <input v-model="duration" type= "text" placeholder= "Type Duration" />
-                <input v-model="publicationYear" type= "text" placeholder= "Type Publication Year" />
-                <!-- <button v-on:click="filterPosts">Filter posts</button>
-                <button v-on:click="sortByPrice">Sort by Price</button> -->
+                <input v-model="title" id = "text" placeholder="Filter by title" />
+                <select v-model="sortBy" aria-label="Sort records by">
+                    <option value="">Default order</option>
+                    <option value="id">ID</option>
+                    <option value="title">Title</option>
+                    <option value="artist">Artist</option>
+                    <option value="duration">Duration</option>
+                    <option value="publicationYear">Publication year</option>
+                </select>
+                <button v-on:click="clearFilters">Clear filters</button>
             </div>
 
+            <div>
+                <input v-model="id" type="text" placeholder="Type ID" />
+                <input v-model="artist" type="text" placeholder="Type Artist" />
+                <input v-model="duration" type="text" placeholder="Type Duration" />
+                <input v-model="publicationYear" type="text" placeholder="Type Publication Year" />
+            </div>
+
+            <p v-if="errorMessage" role="alert">{{ errorMessage }}</p>
+
             <ul v-if="showPosts">
-                <li class="list-group-item" v-for="post in postList" :key="post.id">
+                <li class="list-group-item" v-for="post in filteredPosts" :key="post.id">
                     id: {{ post.id }} - title: {{ post.title }} - artist: {{ post.artist }} - duration: {{ post.duration }} - publication year: {{ post.publicationYear }}
                 </li>
             </ul>
