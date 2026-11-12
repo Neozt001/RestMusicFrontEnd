@@ -11,38 +11,36 @@
     </head>
     <body>
         <div id="app">
-            <h1>{{ intro }}</h1>
+            <h1> Music Records </h1>
 
             <button id = "button1" v-on:click="getAllPosts">Get All posts</button>
-            <!-- <button id = "button2" v-on:click="showPosts = !showPosts">
+            <button id = "button2" v-on:click="showPosts = !showPosts">
                 {{ showPosts ? 'Hide posts' : 'Show posts' }}
-            </button> -->
+            </button>
 
             <div>
-                <input v-model="id" type="text" placeholder="Type ID" />
-                <input v-model="title" id = "input2" type="text" placeholder="Type Title" />
-                <input v-model="artist" type="text" placeholder="Type Artist" />
-                <input v-model="duration" type="text" placeholder="Type Duration" />
-                <input v-model="publicationYear" type="text" placeholder="Type Publication Year" />
+                <input v-model="id" type="text" placeholder= "Type ID" />
+                <input v-model="title" id = "text" placeholder= "Type Title" />
+                <input v-model="artist" type= "text" placeholder= "Type Artist" />
+                <input v-model="duration" type= "text" placeholder= "Type Duration" />
+                <input v-model="publicationYear" type= "text" placeholder= "Type Publication Year" />
                 <!-- <button v-on:click="filterPosts">Filter posts</button>
                 <button v-on:click="sortByPrice">Sort by Price</button> -->
             </div>
 
-            <!-- <ul v-if="showPosts">
-                <li class="list-group-item" v-for="post in filteredPosts" :key="post.id">
-                    id: {{ post.id }} - vendor: {{ post.vendor }} - model: {{ post.model }} - price: {{ post.price }}
+            <ul v-if="showPosts">
+                <li class="list-group-item" v-for="post in postList" :key="post.id">
+                    id: {{ post.id }} - title: {{ post.title }} - artist: {{ post.artist }} - duration: {{ post.duration }} - publication year: {{ post.publicationYear }}
                 </li>
-            </ul> -->
+            </ul>
 
             <!-- <button id = "buttonColor" v-on:click="changeButtonColor">Change Button Color</button> -->
 
         </div>
         <!-- Import App -->
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-        <script src="./js/main.js"></script>
+        <script src="main.js"></script>
 
         <!-- Mount App -->
-        <script>
-            const mountedApp = app.mount('#app')
-        </script>
+       
     </body>
