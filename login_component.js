@@ -1,4 +1,5 @@
 const app = Vue.createApp({});
+const authUrl = 'http://localhost:5209/api/auth/login';
 
 app.component('login-component', {
     data() {
@@ -13,7 +14,7 @@ app.component('login-component', {
             this.errorMessage = '';
 
             try {
-                const response = await fetch('http://localhost:5209/api/auth/login', {
+                const response = await fetch(authUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -34,7 +35,7 @@ app.component('login-component', {
             }
         }
     },
-    template: 
+    template:
     `
         <div class="login-box">
             <h2>Member Login</h2>
