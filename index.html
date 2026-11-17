@@ -14,11 +14,25 @@
             <h1> Music Records </h1>
 
             <logout-component v-on:logout="logout"></logout-component>
+          
 
             <button id="button1" type="button" v-on:click="clearFilters">Get All Records</button>
             <button id = "button2" v-on:click="showPosts = !showPosts">
                 {{ showPosts ? 'Hide posts' : 'Show posts' }}
             </button>
+
+            <section>
+                <h2>Add, update or delete a record</h2>
+                <input v-model.number="record.id" id="recordId" type="number" placeholder="Record ID for update/delete" />
+                <input v-model="record.title" id="recordTitle" type="text" placeholder="Record title" />
+                <input v-model="record.artist" id="recordArtist" type="text" placeholder="Record artist" />
+                <input v-model.number="record.duration" id="recordDuration" type="number" placeholder="Duration in seconds" />
+                <input v-model.number="record.publicationYear" id="recordPublicationYear" type="number" placeholder="Publication year" />
+                <button id="addRecordButton" type="button" v-on:click="addRecord">Add</button>
+                <button id="deleteRecordButton" type="button" v-on:click="deleteRecord">Delete</button>
+                <button id="updateRecordButton" type="button" v-on:click="updateRecord">Update</button>
+                <p v-if="successMessage" role="status">{{ successMessage }}</p>
+            </section>
 
             <form v-on:submit.prevent="getAllPosts">
                 <input v-model="title" id = "text" placeholder="Filter by title" />
