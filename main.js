@@ -1,3 +1,4 @@
+const apiUrl = 'http://localhost:5209/api/musicRecords';
 const app = Vue.createApp({
   data() {
     return {
