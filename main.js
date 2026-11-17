@@ -261,11 +261,17 @@ const app = Vue.createApp({
         }
         if (!this.isValidRecord()) return;
 
+        const token = this.getToken();
+
         axios.put(`${apiUrl}/${id}`, {
             title: this.record.title.trim(),
             artist: this.record.artist.trim(),
             duration: Number(this.record.duration),
             publicationYear: Number(this.record.publicationYear)
+        }, {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
         })
             .then(() => {
                 this.successMessage = 'Record updated.';
