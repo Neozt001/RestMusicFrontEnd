@@ -61,8 +61,13 @@ const app = Vue.createApp({
         this.publicationYear = '';
         this.sortBy = '';
         this.getAllPosts();
-    }
+    },
+    logout() {
+        localStorage.removeItem('token');
+        window.location.href = 'login.html';
+    },
   }
 });
 
+app.component('logout-component', window.logoutComponent);
 app.mount('#app');

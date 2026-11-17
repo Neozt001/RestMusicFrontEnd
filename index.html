@@ -13,6 +13,8 @@
         <div id="app">
             <h1> Music Records </h1>
 
+            <logout-component v-on:logout="logout"></logout-component>
+
             <button id="button1" type="button" v-on:click="clearFilters">Get All Records</button>
             <button id = "button2" v-on:click="showPosts = !showPosts">
                 {{ showPosts ? 'Hide posts' : 'Show posts' }}
@@ -49,6 +51,7 @@
         </div>
         <!-- Import App -->
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="logout_component.js"></script>
         <script src="main.js"></script>
 
         <!-- Mount App -->
