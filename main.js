@@ -1,5 +1,6 @@
-const apiUrl = 'http://localhost:5209/api/musicRecords';
-const authUrl = 'http://localhost:5209/api/auth/login';
+const apiBaseUrl = (window.MUSIC_RECORDS_API_BASE_URL || 'http://localhost:5209').replace(/\/+$/, '');
+const apiUrl = `${apiBaseUrl}/api/musicRecords`;
+const authUrl = `${apiBaseUrl}/api/auth/login`;
 
 const tokenName = 'token';
 
@@ -34,7 +35,6 @@ const app = Vue.createApp({
     },
     created() {
         const token = this.getToken();
-        // console.log('User Info from localStorage:', token); // Debugging line to check the value of userInfoStr
         if (token){
             this.getAllPosts();
         } 
@@ -73,14 +73,13 @@ const app = Vue.createApp({
         getAllPosts() {
             // 1. Get the token stored during login
             const token = this.getToken();
-            console.log('token:', token); // Debugging line to check the token value
         
         // If there's no token, redirect to the login page immediately
             if (!token) {
                 window.location.href = 'login.html';
                 return;
             }
-            axios.get('http://localhost:5209/api/musicRecords', {
+            axios.get(apiUrl, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 },
@@ -167,64 +166,6 @@ const app = Vue.createApp({
             this.errorMessage = 'Could not add the record.';
             console.error('Error adding music record:', error);
         });
-    },
-    deleteRecord() {
-        const id = Number(this.record.id);
-        if (!Number.isInteger(id) || id <= 0) {
-            this.errorMessage = 'Enter a valid record ID to delete.';
-            return;
-        }
-        
-        const token = this.getToken();
-
-        axios.delete(`${apiUrl}/${id}`,{
-            headers: { // TODO - move to interceptor
-                'Authorization': 'Bearer ' + token
-            }
-        })
-            .then(() => {
-                this.successMessage = 'Record deleted.';
-                this.errorMessage = '';
-                this.clearRecordForm();
-                this.clearFilters();
-            })
-            .catch(error => {
-                this.errorMessage = error.response?.status === 404
-                    ? 'No record found with that ID.'
-                    : 'Could not delete the record.';
-                console.error('Error deleting music record:', error);
-            });
-    },
-    updateRecord() {
-        const id = Number(this.record.id);
-        if (!Number.isInteger(id) || id <= 0) {
-            this.errorMessage = 'Enter a valid record ID to update.';
-            return;
-        }
-        if (!this.isValidRecord()) return;
-
-        const token = this.getToken();
-
-        axios.put(`${apiUrl}/${id}`, {
-            title: this.record.title.trim(),
-            artist: this.record.artist.trim(),
-            duration: Number(this.record.duration),
-            publicationYear: Number(this.record.publicationYear)
-        }, {
-            headers: { // TODO - move to interceptor
-                'Authorization': 'Bearer ' + token
-            }
-        })
-            .then(() => {
-                this.successMessage = 'Record updated.';
-                this.errorMessage = '';
-                this.clearRecordForm();
-                this.clearFilters();
-            })
-            .catch(error => {
-                this.errorMessage = 'Could not update the record.';
-                console.error('Error updating music record:', error);
-            });
     },
     deleteRecord() {
         const id = Number(this.record.id);

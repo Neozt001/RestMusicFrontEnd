@@ -1,5 +1,6 @@
 const app = Vue.createApp({});
-const authUrl = 'http://localhost:5209/api/auth/login';
+const apiBaseUrl = (window.MUSIC_RECORDS_API_BASE_URL || 'http://localhost:5209').replace(/\/+$/, '');
+const authUrl = `${apiBaseUrl}/api/auth/login`;
 
 app.component('login-component', {
     data() {

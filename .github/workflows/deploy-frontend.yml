@@ -1,0 +1,60 @@
+name: Deploy music records frontend
+
+on:
+  push:
+    branches:
+      - database
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Configure API endpoint
+        id: deployment-settings
+        shell: pwsh
+        env:
+          API_BASE_URL: ${{ vars.MUSIC_RECORDS_API_BASE_URL }}
+          FTP_SERVER: ${{ secrets.AZURE_FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.AZURE_FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.AZURE_FTP_PASSWORD }}
+        run: |
+          $missing = @()
+          if ([string]::IsNullOrWhiteSpace($env:API_BASE_URL)) { $missing += "MUSIC_RECORDS_API_BASE_URL" }
+          if ([string]::IsNullOrWhiteSpace($env:FTP_SERVER)) { $missing += "AZURE_FTP_SERVER" }
+          if ([string]::IsNullOrWhiteSpace($env:FTP_USERNAME)) { $missing += "AZURE_FTP_USERNAME" }
+          if ([string]::IsNullOrWhiteSpace($env:FTP_PASSWORD)) { $missing += "AZURE_FTP_PASSWORD" }
+
+          if ($missing.Count -gt 0) {
+            "ready=false" >> $env:GITHUB_OUTPUT
+            Write-Host "Deployment skipped; configure these GitHub settings: $($missing -join ', ')."
+            return
+          }
+
+          $apiUri = [Uri]$env:API_BASE_URL
+          if ($apiUri.Scheme -ne "https") {
+            throw "MUSIC_RECORDS_API_BASE_URL must use HTTPS."
+          }
+
+          $apiBaseUrl = $env:API_BASE_URL.TrimEnd("/")
+          $config = "window.MUSIC_RECORDS_API_BASE_URL = '$apiBaseUrl';"
+          Set-Content -LiteralPath "api-config.js" -Value $config -NoNewline
+          "ready=true" >> $env:GITHUB_OUTPUT
+
+      - name: Deploy to Azure App Service over FTPS
+        if: steps.deployment-settings.outputs.ready == 'true'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ secrets.AZURE_FTP_SERVER }}
+          username: ${{ secrets.AZURE_FTP_USERNAME }}
+          password: ${{ secrets.AZURE_FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./
+          server-dir: /site/wwwroot/
